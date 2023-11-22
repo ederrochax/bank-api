@@ -1,6 +1,7 @@
-package accounts
+package accounts_test
 
 import (
+	"bank-api/internal/domain/accounts"
 	"bank-api/internal/domain/entities"
 	"context"
 	"testing"
@@ -23,7 +24,7 @@ func TestGetAccountBalance(t *testing.T) {
 		err:     nil,
 	}
 
-	uc := NewGetAccountBalanceUC(mockRepo)
+	uc := accounts.NewGetAccountBalanceUC(mockRepo)
 	output, err := uc.GetAccountBalance(context.Background(), "1")
 
 	assert.NoError(t, err)

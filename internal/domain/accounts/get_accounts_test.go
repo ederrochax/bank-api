@@ -1,9 +1,10 @@
-package accounts
+package accounts_test
 
 import (
 	"bank-api/internal/domain/entities"
 	"context"
 	"testing"
+	"bank-api/internal/domain/accounts"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -20,13 +21,13 @@ func (m *mockGetAccountsRepository) FindAll(ctx context.Context) ([]entities.Acc
 func Test_GetAccounts(t *testing.T) {
 	mockRepo := &mockGetAccountsRepository{
 		accounts: []entities.Account{
-			{ID: "1", Name: "John Doe", CPF: "12345678900", Balance: 100.0},
-			{ID: "2", Name: "Fulano De tal", CPF: "98765432100", Balance: 200.0},
+			{ID: "1", Name: "John Doe", CPF: "12345678900", Balance: 100},
+			{ID: "2", Name: "Fulano De tal", CPF: "98765432100", Balance: 200},
 		},
 		err: nil,
 	}
 
-	uc := NewGetAccountsUC(mockRepo)
+	uc := accounts.NewGetAccountsUC(mockRepo)
 	output, err := uc.GetAccounts(context.Background())
 
 	assert.NoError(t, err)

@@ -1,6 +1,7 @@
-package accounts
+package accounts_test
 
 import (
+	"bank-api/internal/domain/accounts"
 	"bank-api/internal/domain/entities"
 	"context"
 	"testing"
@@ -23,12 +24,12 @@ func TestCreateAccount(t *testing.T) {
 		err:       nil,
 	}
 
-	uc := NewCreateAccountUC(mockRepo)
-	input := CreateAccountInput{
+	uc := accounts.NewCreateAccountUC(mockRepo)
+	input := accounts.CreateAccountInput{
 		Name:           "John Doe",
 		CPF:            "12345678900",
 		Secret:         "mysecret",
-		InitialBalance: 100.0,
+		InitialBalance: 100,
 	}
 	output, err := uc.CreateAccount(context.Background(), input)
 
