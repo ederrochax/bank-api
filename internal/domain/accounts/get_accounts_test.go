@@ -21,7 +21,7 @@ func Test_GetAccounts(t *testing.T) {
 	mockRepo := &mockGetAccountsRepository{
 		accounts: []entities.Account{
 			{ID: "1", Name: "John Doe", CPF: "12345678900", Balance: 100.0},
-			{ID: "2", Name: "Fulano De Tal", CPF: "98765432100", Balance: 200.0},
+			{ID: "2", Name: "Fulano De tal", CPF: "98765432100", Balance: 200.0},
 		},
 		err: nil,
 	}

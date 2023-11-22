@@ -8,8 +8,12 @@ import (
 	"net/http"
 )
 
-type CreateAccountUC interface {
+type createAccountUC interface {
 	CreateAccount(ctx context.Context, input accounts.CreateAccountInput) (accounts.CreateAccountOutput, error)
+}
+
+type createAccountHandler struct {
+	createAccountUC createAccountUC
 }
 
 type CreateBodyRequest struct {
@@ -19,7 +23,7 @@ type CreateBodyRequest struct {
 	InitialBalance int64  `json:"initial_balance"`
 }
 
-func (h *AccountHandler) CreateAccount(w http.ResponseWriter, r *http.Request) {
+func (h createAccountHandler) CreateAccount(w http.ResponseWriter, r *http.Request) {
 	var reqBody CreateBodyRequest
 
 	err := json.NewDecoder(r.Body).Decode(&reqBody)
@@ -37,11 +41,16 @@ func (h *AccountHandler) CreateAccount(w http.ResponseWriter, r *http.Request) {
 
 	accountOutput, err := h.createAccountUC.CreateAccount(r.Context(), input)
 	if err != nil {
-
 		http.Error(w, fmt.Sprintf("error creating account: %s", err.Error()), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{"account_id": accountOutput.AccountID})
+}
+
+func NewCreateAccountHandler(createAccountUC createAccountUC) createAccountHandler {
+	return createAccountHandler{
+		createAccountUC: createAccountUC,
+	}
 }

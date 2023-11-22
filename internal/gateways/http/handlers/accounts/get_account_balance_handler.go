@@ -6,15 +6,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"github.com/gorilla/mux"
 )
 
-type GetAccountBalanceUC interface {
+type getAccountBalanceUC interface {
 	GetAccountBalance(ctx context.Context, accountID string) (accounts.GetAccountBalanceOutput, error)
 }
 
-func (h *AccountHandler) GetAccountBalance(w http.ResponseWriter, r *http.Request) {
-	accountID := r.URL.Query().Get("account_id")
-	if accountID == "" {
+type getAccountBalanceHandler struct {
+	getAccountBalanceUC getAccountBalanceUC
+}
+
+func (h getAccountBalanceHandler) GetAccountBalance(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	accountID, ok := vars["account_id"]
+	if !ok {
 		http.Error(w, "parameter 'account_id' missing", http.StatusBadRequest)
 		return
 	}
@@ -27,4 +33,10 @@ func (h *AccountHandler) GetAccountBalance(w http.ResponseWriter, r *http.Reques
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]int64{"balance": balance.Balance})
+}
+
+func NewGetAccountBalanceHandler(getAccountBalanceUC getAccountBalanceUC) getAccountBalanceHandler {
+	return getAccountBalanceHandler{
+		getAccountBalanceUC: getAccountBalanceUC,
+	}
 }
