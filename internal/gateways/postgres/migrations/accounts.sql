@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS accounts (
-    id SERIAL PRIMARY KEY,
+    id uuid PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     cpf VARCHAR(11) NOT NULL,
     secret VARCHAR(255) NOT NULL,
