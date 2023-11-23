@@ -6,10 +6,10 @@ import (
 )
 
 func (r *TransferRepository) Create(ctx context.Context, transfer *entities.Transfer) error {
-	query := `INSERT INTO transfers (id, source_account_id, destination_account_id, amount, created_at)
+	query := `INSERT INTO transfers (id, account_origin_id, account_destination_id, amount, created_at)
 			  VALUES ($1, $2, $3, $4, $5)
 			  RETURNING id`
-	err := r.db.QueryRowContext(ctx, query, transfer.ID, transfer.SourceAccountID, transfer.DestinationAccountID, transfer.Amount, transfer.CreatedAt).Scan(&transfer.ID)
+	err := r.db.QueryRowContext(ctx, query, transfer.ID, transfer.AccountOriginID, transfer.AccountDestinationID, transfer.Amount, transfer.CreatedAt).Scan(&transfer.ID)
 	if err != nil {
 		return err
 	}

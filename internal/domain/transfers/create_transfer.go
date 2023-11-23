@@ -16,8 +16,8 @@ type CreateTransferUC struct {
 }
 
 type CreateTransferInput struct {
-	SourceAccountID      string
-	DestinationAccountID string
+	AccountOriginID      string
+	AccountDestinationID string
 	Amount               int64
 }
 
@@ -26,7 +26,7 @@ type CreateTransferOutput struct {
 }
 
 func (uc CreateTransferUC) CreateTransfer(ctx context.Context, input CreateTransferInput) (CreateTransferOutput, error) {
-	transfer, err := entities.NewTransfer(input.SourceAccountID, input.DestinationAccountID, input.Amount)
+	transfer, err := entities.NewTransfer(input.AccountOriginID, input.AccountDestinationID, input.Amount)
 	if err != nil {
 		return CreateTransferOutput{}, fmt.Errorf("unable to new transfer: %w", err)
 	}

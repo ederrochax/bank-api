@@ -14,17 +14,17 @@ var (
 
 type Transfer struct {
 	ID                   string
-	SourceAccountID      string
-	DestinationAccountID string
+	AccountOriginID      string
+	AccountDestinationID string
 	Amount               int64
 	CreatedAt            time.Time
 }
 
-func NewTransfer(sourceAccountID, destinationAccountID string, amount int64) (*Transfer, error) {
+func NewTransfer(accountOriginID, accountDestinationID string, amount int64) (*Transfer, error) {
 	transfer := &Transfer{
 		ID:                   uuid.NewString(),
-		SourceAccountID:      sourceAccountID,
-		DestinationAccountID: destinationAccountID,
+		AccountOriginID:      accountOriginID,
+		AccountDestinationID: accountDestinationID,
 		Amount:               amount,
 		CreatedAt:            time.Now(),
 	}
@@ -41,7 +41,7 @@ func (e Transfer) Validate() error {
 	if e.Amount <= 0 {
 		return ErrInvalidAmount
 	}
-	if e.SourceAccountID == e.DestinationAccountID {
+	if e.AccountOriginID == e.AccountDestinationID {
 		return ErrOrigAccEqualDestAcc
 	}
 
