@@ -3,6 +3,7 @@ package accounts
 import (
 	"bank-api/internal/domain/entities"
 	"context"
+	"fmt"
 )
 
 type getAccountsRepository interface {
@@ -20,7 +21,7 @@ type GetAccountsOutput struct {
 func (uc getAccountsUC) GetAccounts(ctx context.Context) (GetAccountsOutput, error) {
 	accounts, err := uc.accountRepo.FindAll(ctx)
 	if err != nil {
-		return GetAccountsOutput{}, err
+		return GetAccountsOutput{}, fmt.Errorf("unable to find all: %w", err)
 	}
 
 	return GetAccountsOutput{Accounts: accounts}, nil

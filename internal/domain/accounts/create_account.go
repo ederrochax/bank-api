@@ -3,6 +3,7 @@ package accounts
 import (
 	"bank-api/internal/domain/entities"
 	"context"
+	"fmt"
 )
 
 type createAccountRepository interface {
@@ -27,12 +28,12 @@ type CreateAccountOutput struct {
 func (uc createAccountUC) CreateAccount(ctx context.Context, input CreateAccountInput) (CreateAccountOutput, error) {
 	newAccount, err := entities.NewAccount(input.Name, input.CPF, input.Secret, input.InitialBalance)
 	if err != nil {
-		return CreateAccountOutput{}, err
+		return CreateAccountOutput{}, fmt.Errorf("unable to new account: %w", err)
 	}
 
 	accountID, err := uc.accountRepo.Create(ctx, newAccount)
 	if err != nil {
-		return CreateAccountOutput{}, err
+		return CreateAccountOutput{}, fmt.Errorf("unable to create account: %w", err)
 	}
 
 	return CreateAccountOutput{AccountID: accountID}, nil

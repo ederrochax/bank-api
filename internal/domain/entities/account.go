@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	ErrMalformedParameters = fmt.Errorf("mal formed parameters")
+	ErrMalformedParameters = fmt.Errorf("malformed parameters")
 )
 
 type Account struct {
