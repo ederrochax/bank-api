@@ -49,6 +49,37 @@ func (e Account) Validate() error {
 	return nil
 }
 
+func (e Account) CheckWalletFunds(amount int64) error {
+	if amount <= 0 {
+		return ErrInvalidAmount
+	}
+
+	if (e.Balance - amount) < 0 {
+		return ErrInsufficientFunds
+	}
+
+	return nil
+}
+
+func (e *Account) DepositMoney(amount int64) error {
+	if amount <= 0 {
+		return ErrInvalidAmount
+	}
+
+	e.Balance += amount
+	return nil
+}
+
+func (e *Account) WithdrawMoney(amount int64) error {
+	err := e.CheckWalletFunds(amount)
+	if err != nil {
+		return err
+	}
+
+	e.Balance -= amount
+	return nil
+}
+
 func (e Account) hash(input string) string {
 	hasher := md5.New()
 	hasher.Write([]byte(input))

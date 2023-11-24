@@ -6,11 +6,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
 	"github.com/gorilla/mux"
 )
 
 type getAccountBalanceUC interface {
-	GetAccountBalance(ctx context.Context, accountID string) (accounts.GetAccountBalanceOutput, error)
+	GetAccountByID(ctx context.Context, accountID string) (accounts.GetAccountOutput, error)
 }
 
 type getAccountBalanceHandler struct {
@@ -25,14 +26,14 @@ func (h getAccountBalanceHandler) GetAccountBalance(w http.ResponseWriter, r *ht
 		return
 	}
 
-	balance, err := h.getAccountBalanceUC.GetAccountBalance(r.Context(), accountID)
+	account, err := h.getAccountBalanceUC.GetAccountByID(r.Context(), accountID)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error fetching account balance: %s", err.Error()), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]int64{"balance": balance.Balance})
+	json.NewEncoder(w).Encode(map[string]int64{"balance": account.Account.Balance})
 }
 
 func NewGetAccountBalanceHandler(getAccountBalanceUC getAccountBalanceUC) getAccountBalanceHandler {

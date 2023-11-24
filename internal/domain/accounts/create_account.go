@@ -44,3 +44,4 @@ func NewCreateAccountUC(accountRepo createAccountRepository) createAccountUC {
 		accountRepo: accountRepo,
 	}
 }
+

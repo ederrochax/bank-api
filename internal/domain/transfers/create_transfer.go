@@ -4,15 +4,21 @@ import (
 	"context"
 	"fmt"
 
+	"bank-api/internal/domain/accounts"
 	"bank-api/internal/domain/entities"
 )
 
 type createTransferRepository interface {
-	Create(context.Context, *entities.Transfer) error
+	Create(context.Context, entities.TransactionInput) error
+}
+
+type getAccountByIDUC interface {
+	GetAccountByID(ctx context.Context, accountID string) (accounts.GetAccountOutput, error)
 }
 
 type CreateTransferUC struct {
-	transfersRepo createTransferRepository
+	transfersRepo  createTransferRepository
+	accountUseCase getAccountByIDUC
 }
 
 type CreateTransferInput struct {
@@ -31,7 +37,31 @@ func (uc CreateTransferUC) CreateTransfer(ctx context.Context, input CreateTrans
 		return CreateTransferOutput{}, fmt.Errorf("unable to new transfer: %w", err)
 	}
 
-	err = uc.transfersRepo.Create(ctx, transfer)
+	origAcc, err := uc.accountUseCase.GetAccountByID(ctx, input.AccountOriginID)
+	if err != nil {
+		return CreateTransferOutput{}, err
+	}
+
+	destAcc, err := uc.accountUseCase.GetAccountByID(ctx, input.AccountDestinationID)
+	if err != nil {
+		return CreateTransferOutput{}, err
+	}
+
+	err = origAcc.Account.WithdrawMoney(input.Amount)
+	if err != nil {
+		return CreateTransferOutput{}, err
+	}
+
+	err = destAcc.Account.DepositMoney(input.Amount)
+	if err != nil {
+		return CreateTransferOutput{}, err
+	}
+
+	err = uc.transfersRepo.Create(ctx, entities.TransactionInput{
+		OriginAcount:      &origAcc.Account,
+		DestinationAcount: &destAcc.Account,
+		Transfer:          transfer,
+	})
 	if err != nil {
 		return CreateTransferOutput{}, fmt.Errorf("unable to save transfer: %w", err)
 	}

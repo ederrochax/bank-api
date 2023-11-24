@@ -10,6 +10,7 @@ import (
 var (
 	ErrInvalidAmount       = fmt.Errorf("the amount must be greater than 0")
 	ErrOrigAccEqualDestAcc = fmt.Errorf("the destination account can't be equal the origin account")
+	ErrInsufficientFunds   = fmt.Errorf("the account has insufficient funds")
 )
 
 type Transfer struct {
@@ -18,6 +19,12 @@ type Transfer struct {
 	AccountDestinationID string
 	Amount               int64
 	CreatedAt            time.Time
+}
+
+type TransactionInput struct {
+	OriginAcount      *Account
+	DestinationAcount *Account
+	Transfer          *Transfer
 }
 
 func NewTransfer(accountOriginID, accountDestinationID string, amount int64) (*Transfer, error) {

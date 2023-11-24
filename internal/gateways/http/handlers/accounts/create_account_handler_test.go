@@ -26,7 +26,7 @@ func (m *mockCreateAccountUC) CreateAccount(ctx context.Context, input accounts.
 
 func TestCreateAccountHandler(t *testing.T) {
 	mockUC := new(mockCreateAccountUC)
-	mockUC.On("CreateAccount", mock.Anything, mock.Anything).Return(accounts.CreateAccountOutput{"account_id"}, nil)
+	mockUC.On("CreateAccount", mock.Anything, mock.Anything).Return(accounts.CreateAccountOutput{AccountID: "account_id"}, nil)
 
 	handler := accounthandler.NewCreateAccountHandler(mockUC)
 
